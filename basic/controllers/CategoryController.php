@@ -2,12 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\Category;
-use app\models\Tags;
-use app\models\User;
-use app\models\LoginForm;
 use Yii;
-use app\models\Post;
+use app\models\Category;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -16,9 +12,9 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
- * CRUD операции модели "Посты".
+ * CategoryController implements the CRUD actions for Category model.
  */
-class PostController extends Controller
+class CategoryController extends Controller
 {
     public function behaviors()
     {
@@ -35,20 +31,20 @@ class PostController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
+                    'delete' => ['category'],
                 ],
             ],
         ];
     }
 
     /**
-     * Список постов.
+     * Список категорий.
      * @return string
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Post::find(),
+            'query' => Category::find(),
         ]);
 
         return $this->render('index', [
@@ -57,8 +53,8 @@ class PostController extends Controller
     }
 
     /**
-     * Просмотр поста.
-     * @param string $id идентификатор поста
+     * Просмотр категории.
+     * @param string $id идентификатор просматриваемой категории
      * @return string
      */
     public function actionView($id)
@@ -69,29 +65,25 @@ class PostController extends Controller
     }
 
     /**
-     * Создание поста.
+     * Создание категории.
      * @return string|Response
      */
     public function actionCreate()
     {
-        $model = new Post();
-        $model->publish_date = date("Y-m-d H:i:s");
-        $model->author_id = Yii::$app->user->id;
+        $model = new Category();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'category' => Category::find()->all(),
-                'authors' => User::find()->all()
             ]);
         }
     }
 
     /**
-     * Редактирование поста.
-     * @param string $id идентификатор редактируемого поста
+     * Редактирование категории.
+     * @param string $id идентификатор редактируемой категории
      * @return string|Response
      */
     public function actionUpdate($id)
@@ -103,15 +95,13 @@ class PostController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'authors' => User::find()->all(),
-                'category' => Category::find()->all()
             ]);
         }
     }
 
     /**
-     * Удаление поста.
-     * @param string $id идентификатор удаляемого поста
+     * Удаление категории
+     * @param string $id идентификатор удаляемой категории
      * @return Response
      */
     public function actionDelete($id)
@@ -122,15 +112,15 @@ class PostController extends Controller
     }
 
     /**
-     * Finds the Post model based on its primary key value.
+     * Finds the Category model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Post the loaded model
+     * @return Category the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Post::findOne($id)) !== null) {
+        if (($model = Category::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

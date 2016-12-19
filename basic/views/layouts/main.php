@@ -44,9 +44,10 @@ AppAsset::register($this);
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (
                 ['label' => Yii::$app->user->identity->username, 'items' => [
-                    ['label' => 'List of users', 'url' => ['/listOfUsers']],
-                    ['label' => 'Posts', 'url' => ['/post']],
-                    ['label' => 'Comments', 'url' => ['/comment']],
+                    ['label' => 'List of users', 'url' => ['/listofusers']],
+                    ['label' => 'My Categoryes', 'url' => ['/category']],
+                    ['label' => 'My Posts', 'url' => ['/post']],
+                    ['label' => 'My Comments', 'url' => ['/comment']],
                     [
                        'label' => 'Logout',
                        'url' => ['/site/logout'],

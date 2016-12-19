@@ -4,9 +4,12 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Post */
+/* @var $model common\models\Post */
+/* @var $authors yii\db\ActiveRecord[] */
+/* @var $category yii\db\ActiveRecord[] */
+/* @var $tags yii\db\ActiveRecord[] */
 
-$this->title = 'Create Post';
+$this->title = 'Create post';
 $this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,6 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'category' => $category,
+        'authors' => $authors
     ]) ?>
 
 </div>

@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Comment;
+use app\models\Post;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,10 +22,19 @@ class CommentController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'allow' => true,
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['post'],
                 ],
             ],
         ];
@@ -64,12 +75,14 @@ class CommentController extends Controller
     public function actionCreate()
     {
         $model = new Comment();
+        $model->author_id = Yii::$app->user->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'post' => Post::find()->all()
             ]);
         }
     }
@@ -89,6 +102,7 @@ class CommentController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'post' => Post::find()->all()
             ]);
         }
     }

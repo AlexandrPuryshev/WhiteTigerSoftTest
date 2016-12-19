@@ -3,12 +3,15 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Post */
+/* @var $model common\models\Post */
+/* @var $authors yii\db\ActiveRecord[] */
+/* @var $tags yii\db\ActiveRecord[] */
+/* @var $category yii\db\ActiveRecord[] */
 
-$this->title = 'Update Post: ' . $model->title;
+$this->title = 'Edit post: ' . ' ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Edit';
 ?>
 <div class="post-update">
 
@@ -16,6 +19,8 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'category' => $category,
+        'authors' => $authors
     ]) ?>
 
 </div>

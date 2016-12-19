@@ -9,7 +9,6 @@ use Yii;
  *
  * @property integer $id
  * @property string $name
- * @property string $description
  */
 class Listofusers extends \yii\db\ActiveRecord
 {
@@ -28,7 +27,7 @@ class Listofusers extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['name', 'description'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 255],
             [['name'], 'unique'],
         ];
     }
@@ -41,7 +40,6 @@ class Listofusers extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'description' => 'Description',
         ];
     }
 }

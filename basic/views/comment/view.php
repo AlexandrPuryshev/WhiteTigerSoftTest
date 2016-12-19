@@ -4,9 +4,9 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Comment */
+/* @var $model common\models\Comment */
 
-$this->title = $model->id;
+$this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Comments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -29,11 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'author',
-            'email:email',
-            'url:url',
-            'content:ntext',
-            'status',
+            'pid',
+            'title',
+            'content',
+            'publish_status',
+            'post_id',
+            'author_id',
         ],
     ]) ?>
 

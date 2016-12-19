@@ -12,10 +12,11 @@ use yii\web\IdentityInterface;
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
 
-	const STATUS_DELETED = 0;
+    const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+    const ROLE_USER = 10;
+    const ROLE_ADMIN = 100;
 
-    private $authKey;
 
     public static function tableName()
     {
@@ -33,15 +34,24 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-        ];
-    }
+      * @inheritdoc
+      */
+     public function rules()
+     {
+         return [
+             [['username', 'email'], 'required'],
+             [['new_password'], 'required', 'on' => 'createUser'],
+             [['email'], 'email'],
+             [['username', 'new_password'], 'string'],
+
+             ['status', 'default', 'value' => self::STATUS_ACTIVE],
+             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+
+             ['role', 'default', 'value' => self::ROLE_USER],
+             ['role', 'in', 'range' => [self::ROLE_USER]],
+         ];
+     }
+
  
 
     /**
@@ -51,14 +61,17 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
+    
 
+	/**
+     * @inheritdoc
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+    }
 
-	public static function findIdentityByAccessToken($token, $type = null)
-	{
-	    throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
-	}
-
-	 /**
+	  /**
      * Finds user by username
      *
      * @param string $username
@@ -76,7 +89,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
 	public function getAuthKey()
 	{
-	    return $this->authKey;
+	    return $this->auth_key;
 	}    
 
 	public function validateAuthKey($authKey)

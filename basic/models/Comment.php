@@ -3,19 +3,35 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+use yii\web\NotFoundHttpException;
 
 /**
- * This is the model class for table "{{%comment}}".
+ * Модель комментариев.
  *
  * @property integer $id
- * @property string $author
- * @property string $email
- * @property string $url
- * @property string $content
- * @property integer $status
+ * @property integer $pid идентификатор родительского комментария
+ * @property string $title заголовок
+ * @property string $content комментарий
+ * @property string $publish_status статус публикации
+ * @property integer $post_id идентификатор поста, к которому относится комментарий
+ * @property integer $author_id идентификатор автора комментария
+ *
+ * @property Post $post
+ * @property User $author
  */
 class Comment extends \yii\db\ActiveRecord
 {
+    /**
+     * Статус комментария "На модерации"
+     */
+    const STATUS_MODERATE = 'moderate';
+    /**
+     * Статус комментария "Опубликован"
+     */
+    const STATUS_PUBLISH = 'publish';
+
     /**
      * @inheritdoc
      */
@@ -30,10 +46,10 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['author', 'email', 'url', 'content', 'status'], 'required'],
-            [['content'], 'string'],
-            [['status'], 'integer'],
-            [['author', 'email', 'url'], 'string', 'max' => 255],
+            [['pid', 'post_id', 'author_id'], 'integer'],
+            [['title', 'content'], 'required'],
+            [['publish_status'], 'string'],
+            [['title', 'content'], 'string', 'max' => 255]
         ];
     }
 
@@ -44,11 +60,55 @@ class Comment extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'author' => 'Author',
-            'email' => 'Email',
-            'url' => 'Url',
+            'pid' => 'Pid',
+            'title' => 'Title',
             'content' => 'Content',
-            'status' => 'Status',
+            'publish_status' => 'Publish status',
+            'post_id' => 'Post ID',
+            'author_id' => 'Author ID',
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getPost()
+    {
+        return $this->hasOne(Post::className(), ['id' => 'post_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getAuthor()
+    {
+        return $this->hasOne(User::className(), ['id' => 'author_id']);
+    }
+
+    /**
+     * Возвращает комментарий.
+     * @param int $id идентификатор комментария
+     * @throws NotFoundHttpException
+     * @return Comment
+     */
+    public function getComment($id)
+    {
+        if (
+            ($model = Comment::findOne($id)) !== null &&
+            $model->isPublished()
+        ) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested post does not exist.');
+        }
+    }
+
+    /**
+     * Опубликован ли комментарий.
+     * @return bool
+     */
+    protected function isPublished()
+    {
+        return $this->publish_status === self::STATUS_PUBLISH;
     }
 }
