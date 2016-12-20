@@ -127,9 +127,7 @@ class Post extends ActiveRecord
     public function getPublishedPosts()
     {
         return new ActiveDataProvider([
-            'query' => Post::find()
-                ->where(['publish_status' => self::STATUS_PUBLISH])
-                ->orderBy(['publish_date' => SORT_DESC])
+            'query' => Post::find()->orderBy(['publish_date' => SORT_DESC])
         ]);
     }
 

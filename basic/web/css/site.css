@@ -3,6 +3,40 @@ body {
     height: 100%;
 }
 
+.sidebar {
+    position: relative;
+    z-index: 1;
+    float: right;
+    padding: 30% 1%;
+    width: 25%;
+    background-color: #e9e9e9;
+    color: inherit;
+}
+
+.deletePost{
+    float: right;
+    margin-top: -6%;
+    display:none;
+}
+
+.content_posts:hover .deletePost{
+    display:block;
+}
+
+.bigHr {
+    border: none; /* Убираем границу */
+    background-color: grey ; /* Цвет линии */
+    color: grey; /* Цвет линии для IE6-7 */
+    height: 10px; /* Толщина линии */
+}
+
+.smallHr{
+    border: none; /* Убираем границу */
+    background-color: grey ; /* Цвет линии */
+    color: grey; /* Цвет линии для IE6-7 */
+    height: 2px; /* Толщина линии */
+}
+
 .wrap {
     min-height: 100%;
     height: auto;

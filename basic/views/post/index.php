@@ -1,40 +1,52 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $posts yii\data\ActiveDataProvider */
+/* @var $categories yii\data\ActiveDataProvider */
+/* @var $post app\models\Post */
 
 $this->title = 'Posts';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
-<div class="post-index">
+
+<div class="col-sm-8 post-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
+
+    <hr class = "bigHr">
 
     <p>
         <?= Html::a('Create post', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+    <hr class = "bigHr">
 
-            'id',
-            'title',
-            'anons:ntext',
-            [
-                'label' => 'Category',
-                'value' => 'category.name'
-            ],
-            'author.username',
-            'publish_status',
-            'publish_date',
+    <?php Pjax::begin(); ?>
+    <?php
+        foreach ($posts->models as $post) {
+            echo $this->render('shortView', [
+                'model' => $post
+            ]);
+        }
+    ?>
+    <?php Pjax::end(); ?>
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
 
+</div>
+
+<div class="col-sm-3 col-sm-offset-1 blog-sidebar sidebar">
+    <h1 style = "margin-top: -100%;">Category</h1>
+    <ul>
+    <?php
+    foreach ($categories->models as $category) {
+        echo $this->render('//category/shortViewCategory', [
+            'model' => $category
+        ]);
+    }
+    ?>
+    </ul>
 </div>

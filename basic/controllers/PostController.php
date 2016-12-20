@@ -6,6 +6,7 @@ use app\models\Category;
 use app\models\Tags;
 use app\models\User;
 use app\models\LoginForm;
+use app\models\Comment;
 use Yii;
 use app\models\Post;
 use yii\data\ActiveDataProvider;
@@ -47,12 +48,12 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Post::find(),
-        ]);
+        $post = new Post();
+        $category = new Category();
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+            'posts' => $post->getPublishedPosts(),
+            'categories' => $category->getCategories()
         ]);
     }
 
@@ -63,8 +64,10 @@ class PostController extends Controller
      */
     public function actionView($id)
     {
+        $post = new Post();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            //'commentForm' => new Comment(Url::to(['comment/add', 'id' => $id])),
         ]);
     }
 
@@ -116,9 +119,12 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->delete();
 
-        return $this->redirect(['index']);
+        $this->actionIndex();
+
+        //return $this->redirect(['index']);
     }
 
     /**
