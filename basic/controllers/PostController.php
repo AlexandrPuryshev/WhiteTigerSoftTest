@@ -15,7 +15,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
-
+use app\models\UploadForm;
+use yii\web\UploadedFile;
 /**
  * CRUD операции модели "Посты".
  */
@@ -78,14 +79,20 @@ class PostController extends Controller
     public function actionCreate()
     {
         $model = new Post();
+        $upload = new UploadForm();
+        /* push autodata in field publish_date */
         $model->publish_date = date("Y-m-d H:i:s");
+        /* push auto author id in field author_id */
         $model->author_id = Yii::$app->user->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                $upload->imageFile = UploadedFile::getInstance($model, 'imageFile');
+                $upload->upload();
                 return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'image' => $upload,
                 'category' => Category::find()->all(),
                 'authors' => User::find()->all()
             ]);
@@ -100,12 +107,17 @@ class PostController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $upload = new UploadForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $upload->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            echo ($upload->imageFile);
+            $upload->upload();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'image' => $upload,
                 'authors' => User::find()->all(),
                 'category' => Category::find()->all()
             ]);

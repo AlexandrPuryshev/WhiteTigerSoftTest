@@ -15,7 +15,9 @@ use yii\widgets\ActiveForm;
 
 <div class="post-form">
 
-    <?php $form = ActiveForm::begin() ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype'=>'multipart/form-data']]); ?>
+
+    <?= $form->field($image, 'imageFile')->fileInput() ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => 255]) ?>
 
@@ -30,6 +32,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'publish_status')->dropDownList(
         [Post::STATUS_DRAFT => 'Draft', Post::STATUS_PUBLISH => 'Published']
     ) ?>
+
 
 
     <div class="form-group">

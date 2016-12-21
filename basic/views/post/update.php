@@ -20,7 +20,8 @@ $this->params['breadcrumbs'][] = 'Edit';
     <?= $this->render('_form', [
         'model' => $model,
         'category' => $category,
-        'authors' => $authors
+        'authors' => $authors,
+        'image' => $image
     ]) ?>
 
 </div>
