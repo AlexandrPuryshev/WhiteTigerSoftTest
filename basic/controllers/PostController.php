@@ -17,6 +17,7 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
+use yii\bootstrap\Alert;
 /**
  * CRUD операции модели "Посты".
  */
@@ -86,6 +87,7 @@ class PostController extends Controller
         $model->author_id = Yii::$app->user->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                echo '<script> console.log("Зашли create!") </script>';
                 $upload->imageFile = UploadedFile::getInstance($model, 'imageFile');
                 $upload->upload();
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -111,10 +113,18 @@ class PostController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $upload->imageFile = UploadedFile::getInstance($model, 'imageFile');
-            echo ($upload->imageFile);
-            $upload->upload();
+            if(!$upload->upload()){
+                Alert::begin([
+                    'options' => [
+                        'class' => 'alert-warning',
+                    ],
+                ]);
+                echo 'The image has not passed validation!';
+                Alert::end();
+            };
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            echo '<script> console.log("Зашли update render!") </script>';
             return $this->render('update', [
                 'model' => $model,
                 'image' => $upload,

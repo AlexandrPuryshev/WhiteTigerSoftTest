@@ -43,14 +43,6 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
-        ],
-        */
     ],
     'params' => $params,
 ];
@@ -65,6 +57,22 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+    ];
+    $config['components']['log']['targets'][] = [
+        'class' => 'yii\log\FileTarget',
+        'levels' => ['info'],
+        'categories' => ['apiRequest'],
+        'logFile' => '@app/runtime/logs/API/requests.log',
+        'maxFileSize' => 1024 * 2,
+        'maxLogFiles' => 20,
+    ];
+    $config['components']['log']['targets'][] = [
+        'class' => 'yii\log\FileTarget',
+        'levels' => ['info'],
+        'categories' => ['apiResponse'],
+        'logFile' => '@app/runtime/logs/API/response.log',
+        'maxFileSize' => 1024 * 2,
+        'maxLogFiles' => 20,
     ];
 }
 

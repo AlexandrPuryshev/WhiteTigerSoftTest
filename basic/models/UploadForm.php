@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\web\UploadedFile;
+use Yii;
 
 class UploadForm extends Model
 {
@@ -14,17 +15,19 @@ class UploadForm extends Model
 
     public function rules()
     {
-        return [
-            [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
-        ];
+        return array(
+            // Максимальный и минимальный размер указываем в байтах.
+            array('imageFile', 'file', 'extensions'=>'jpg, gif, png', 'maxSize' => 1048576),
+        );
     }
     
     public function upload()
     {
         if ($this->validate()) {
-            var_dump("123");
-            $images_path = realpath(Yii::app()->basePath . '/../assets');
-            $this->imageFile->saveAs($images_path . '/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
+            $images_path = realpath(Yii::$app->basePath . '/assets');
+            Yii::warning($this->imageFile);
+            Yii::warning(Yii::$app->basePath . '\\assets\\', 'imageData');
+            $this->imageFile->saveAs($images_path . '/' . $this->imageFile . '.' . $this->imageFile->extension);
             return true;
         } else {
             return false;
