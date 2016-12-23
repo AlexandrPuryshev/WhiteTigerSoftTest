@@ -87,7 +87,6 @@ class PostController extends Controller
         $model->author_id = Yii::$app->user->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                echo '<script> console.log("Зашли create!") </script>';
                 $upload->imageFile = UploadedFile::getInstance($model, 'imageFile');
                 $upload->upload();
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -112,7 +111,7 @@ class PostController extends Controller
         $upload = new UploadForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $upload->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            $upload->imageFile = UploadedFile::getInstance($upload, 'imageFile');
             if(!$upload->upload()){
                 Alert::begin([
                     'options' => [

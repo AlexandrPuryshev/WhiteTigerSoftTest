@@ -25,7 +25,7 @@ class UploadForm extends Model
     {
         if ($this->validate()) {
             $images_path = realpath(Yii::$app->basePath . '/assets');
-            Yii::warning($this->imageFile);
+            Yii::warning($this->imageFile->baseName);
             Yii::warning(Yii::$app->basePath . '\\assets\\', 'imageData');
             $this->imageFile->saveAs($images_path . '/' . $this->imageFile . '.' . $this->imageFile->extension);
             return true;
