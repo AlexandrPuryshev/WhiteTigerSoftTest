@@ -3,6 +3,10 @@ body {
     height: 100%;
 }
 
+.post-home{
+    width: 100%;
+}
+
 .sidebar {
     position: relative;
     z-index: 1;
@@ -28,6 +32,14 @@ body {
     background-color: grey ; /* Цвет линии */
     color: grey; /* Цвет линии для IE6-7 */
     height: 10px; /* Толщина линии */
+}
+
+.bigHrHome {
+    border: none; /* Убираем границу */
+    background-color: grey ; /* Цвет линии */
+    color: grey; /* Цвет линии для IE6-7 */
+    height: 10px; /* Толщина линии */
+    width: 100%;
 }
 
 .smallHr{

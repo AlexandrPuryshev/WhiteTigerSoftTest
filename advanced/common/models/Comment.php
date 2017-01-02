@@ -46,7 +46,7 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pid', 'post_id', 'author_id'], 'integer'],
+            [['postId', 'authorId'], 'integer'],
             [['title', 'content'], 'required'],
             [['publish_status'], 'string'],
             [['title', 'content'], 'string', 'max' => 255]
@@ -60,12 +60,11 @@ class Comment extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'pid' => 'Pid',
             'title' => 'Title',
             'content' => 'Content',
             'publish_status' => 'Publish status',
-            'post_id' => 'Post ID',
-            'author_id' => 'Author ID',
+            'postId' => 'Post ID',
+            'authorId' => 'Author ID',
         ];
     }
 
@@ -74,7 +73,7 @@ class Comment extends \yii\db\ActiveRecord
      */
     public function getPost()
     {
-        return $this->hasOne(Post::className(), ['id' => 'post_id']);
+        return $this->hasOne(Post::className(), ['id' => 'postId']);
     }
 
     /**
@@ -82,7 +81,7 @@ class Comment extends \yii\db\ActiveRecord
      */
     public function getAuthor()
     {
-        return $this->hasOne(User::className(), ['id' => 'author_id']);
+        return $this->hasOne(User::className(), ['id' => 'authorId']);
     }
 
     /**
@@ -91,7 +90,7 @@ class Comment extends \yii\db\ActiveRecord
      * @throws NotFoundHttpException
      * @return Comment
      */
-    public function getComment($id)
+    public function getPublishedComment($id)
     {
         if (
             ($model = Comment::findOne($id)) !== null &&

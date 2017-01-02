@@ -23,6 +23,7 @@ class m161225_181536_post extends Migration
             'content' => $this->text()->notNull(),
             'categoryId' => $this->integer(),
             'authorId' => $this->integer(),
+            'image' => $this->string(),
             'publishStatus' => "enum('" . Post::STATUS_DRAFT . "','" . Post::STATUS_PUBLISH . "') NOT NULL DEFAULT '" . Post::STATUS_DRAFT . "'",
             'createdAt' => $this->string()->notNull(),
             'updatedAt' => $this->string()->notNull(),

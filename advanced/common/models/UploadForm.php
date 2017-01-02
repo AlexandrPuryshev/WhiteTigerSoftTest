@@ -13,6 +13,8 @@ class UploadForm extends Model
      */
     public $imageFile;
 
+    public $name;
+
     public function rules()
     {
         return array(
@@ -23,15 +25,14 @@ class UploadForm extends Model
     
     public function upload()
     {
-        Yii::warning($this->validate());
-        Yii::warning(Yii::$app->basePath);
-        if ($this->validate()) {
-            $images_path = realpath(Yii::$app->basePath . '\\runtime\\image');
-            $this->imageFile->saveAs($images_path . '\\' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
-            return true;
-        } else {
-            return false;
+        if(isset($this->imageFile->baseName)){
+            if ($this->validate()) {
+                $this->name = "image-prefix-" . time() . '-' . $this->imageFile->baseName;
+                $this->imageFile->saveAs(Yii::getAlias('@imagePath'). '\\' . $this->name . '.' . $this->imageFile->extension);
+                return true;
+            }
         }
+        return false;
     }
 }
 

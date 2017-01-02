@@ -75,7 +75,7 @@ class CommentController extends Controller
     public function actionCreate()
     {
         $model = new Comment();
-        $model->author_id = Yii::$app->user->id;
+        $model->authorId = Yii::$app->user->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

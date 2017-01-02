@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
+
 /**
  * Модель постов.
  *
@@ -27,7 +28,7 @@ use yii\web\NotFoundHttpException;
  */
 class Post extends ActiveRecord
 {
-    /**
+     /**
      * Статус поста: опубликованн.
      */
     const STATUS_PUBLISH = 'publish';
@@ -36,8 +37,7 @@ class Post extends ActiveRecord
      */
     const STATUS_DRAFT = 'draft';
 
-
-    /**
+     /**
      * @inheritdoc
      */
     public static function tableName()
@@ -76,6 +76,64 @@ class Post extends ActiveRecord
         ];
     }
 
+
+    /**
+     * Возвращает опубликованные комментарии
+     * @return ActiveDataProvider
+     */
+    /*public function getPublishedComments()
+    {
+        return new ActiveDataProvider([
+            'query' => $this->getComments()
+                ->where(['publishStatus' => Comment::STATUS_PUBLISH])
+        ]);
+    }*/
+    
+    /**
+     * Возвращает опубликованные комментарии
+     * @return ActiveDataProvider
+     */
+    public static function findPublishedComments()
+    {
+        return self::find()->where(['publishStatus' => Comment::STATUS_PUBLISH]);
+    }
+
+    /**
+     * Возвращает все опубликованные посты
+     * @return ActiveQuery
+     */
+    public static function findPublishedPosts()
+    {
+        return self::find()->orderBy(['createdAt' => SORT_DESC]);
+    }
+
+     /**
+     * Возвращает опубликованные посты автора
+     * @return ActiveQuery
+     */
+    public static function findAuthorPublishedPosts()
+    {
+        return self::find()->where(['authorId' => Yii::$app->user->id]);
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * Опубликован ли пост.
+     * @return bool
+     */
+    protected function isPublished()
+    {
+        return $this->publishStatus === self::STATUS_PUBLISH;
+    }
+
     /**
      * @return ActiveQuery
      */
@@ -100,29 +158,6 @@ class Post extends ActiveRecord
         return $this->hasMany(Comment::className(), ['postId' => 'id']);
     }
 
-    /**
-     * Возвращает опубликованные комментарии
-     * @return ActiveDataProvider
-     */
-    public function getPublishedComments()
-    {
-        return new ActiveDataProvider([
-            'query' => $this->getComments()
-                ->where(['publishStatus' => Comment::STATUS_PUBLISH])
-        ]);
-    }
-
-
-    /**
-     * Возвращает опубликованные посты
-     * @return ActiveDataProvider
-     */
-    public function getPublishedPosts()
-    {
-        return new ActiveDataProvider([
-            'query' => Post::find()->orderBy(['createdAt' => SORT_DESC])
-        ]);
-    }
 
     /**
      * Возвращает модель поста.
@@ -140,22 +175,5 @@ class Post extends ActiveRecord
         } else {
             throw new NotFoundHttpException('The requested post does not exist.');
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function afterSave($insert, $changedAttributes)
-    {
-        parent::afterSave($insert, $changedAttributes);
-    }
-
-    /**
-     * Опубликован ли пост.
-     * @return bool
-     */
-    protected function isPublished()
-    {
-        return $this->publishStatus === self::STATUS_PUBLISH;
     }
 }

@@ -28,8 +28,15 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function behaviors()
     {
-        return [
-            TimestampBehavior::className(),
+       return [
+            'timestamp' => [
+                'class' => '\yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['createdAt', 'updatedAt'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updatedAt'],
+                ],
+                'value' => new \yii\db\Expression('NOW()'),
+            ],
         ];
     }
 
@@ -40,9 +47,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      {
          return [
              [['username', 'email'], 'required'],
-             [['new_password'], 'required', 'on' => 'createUser'],
+             [['passwordHash'], 'required', 'on' => 'createUser'],
              [['email'], 'email'],
-             [['username', 'new_password'], 'string'],
+             [['username', 'passwordHash'], 'string'],
 
              ['status', 'default', 'value' => self::STATUS_ACTIVE],
              ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
@@ -101,6 +108,30 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 	{
 	    return Yii::$app->security->validatePassword($password, $this->passwordHash);
 	}
+
+     /**
+     * Generates new password reset token
+     */
+    public function generatePasswordResetToken()
+    {
+        $this->passwordResetToken = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    /**
+     * Finds out if password reset token is valid
+     *
+     * @param string $token password reset token
+     * @return bool
+     */
+    public static function isPasswordResetTokenValid($token)
+    {
+        if (empty($token)) {
+            return false;
+        }
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+        return $timestamp + $expire >= time();
+    }
 
 	/**
      * Generates password hash from password and sets it to the model

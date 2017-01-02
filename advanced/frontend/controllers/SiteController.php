@@ -12,12 +12,20 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use common\models\Post;
+use yii\data\Pagination;
 
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
+
+    public function init() 
+    {
+         //TODO: set url image aliase
+         Yii::setAlias('@imageUrlPath', Yii::$app->request->hostInfo.Yii::getAlias('@web'). '/../runtime/image');
+    }
     /**
      * @inheritdoc
      */
@@ -82,7 +90,22 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $post = new Post();
+
+        $postQuery = Post::findPublishedPosts();
+
+        //Pages Navigation
+        $countQuery = clone $postQuery;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
+        $pages->pageSizeParam = false;
+        $models = $postQuery->offset($pages->offset)
+        ->limit($pages->limit)
+        ->all();
+
+        return $this->render('index', [
+            'models' => $models,
+            'pages' => $pages,
+        ]);
     }
 
     /**
