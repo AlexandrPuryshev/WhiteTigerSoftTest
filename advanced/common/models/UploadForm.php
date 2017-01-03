@@ -19,7 +19,7 @@ class UploadForm extends Model
     {
         return array(
             // Максимальный и минимальный размер указываем в байтах.
-            array('imageFile', 'file', 'extensions'=>'jpg, gif, png', 'maxSize' => 1048576),
+            array('imageFile', 'file', 'extensions'=>'jpg', 'maxSize' => 1048576),
         );
     }
     

@@ -22,12 +22,16 @@ use \yii\web\YiiAsset;
 	<?php
 		if(isset($model->image))
 		{ 
-			echo Html::img(Url::to(Yii::getAlias('@imageUrlPath')) . '/' . $model->image);
+			echo Html::img(Url::to(Yii::getAlias('@imageUrlPath')) . '/' . $model->image, ['style' => 'width: 100%;']);
 		}
 	?>
 	    <p> Author: <?= $model->author->username ?> </p>
 	    <p> Data of publish: <?= $model->createdAt ?> </p>
-	    <p> Category: <?= Html::a($model->category->name, ['category/view', 'id' => $model->category->id]) ?></p>
+	    <?php
+	    	if (isset($model->category)) { 
+	    		echo "<p> Category: " . Html::a($model->category->name, ['category/view', 'id' => $model->category->id])  . "</p>";
+	    	} 
+	    ?>
 	</div>
 
 	<div class="content">
