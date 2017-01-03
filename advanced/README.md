@@ -1,10 +1,17 @@
 Чтобы запустить этот проект нужно сначала выполнить такие команды (по порядку):
- 1) composer global require "fxp/composer-asset-plugin:^1.2.0"
- 2) composer update или composer install
- 3) php init
- 4) следовать инструкциям php init
- 5) зайти в папку по адресу (папка проекта)\common\config
+
+1) composer global require "fxp/composer-asset-plugin:^1.2.0"
+
+2) composer update или composer install
+ 
+3) php init
+ 
+4) следовать инструкциям php init
+ 
+5) зайти в папку по адресу (папка проекта)\common\config
+ 
  6) открыть файл main-local, сам файл должен содрежать следующее( пример):
+ 
           <?php
             return [
                 'components' => [
@@ -26,4 +33,5 @@
                     ],
                 ],
             ];
+            
 7) выполнить команду php yii migrate         
