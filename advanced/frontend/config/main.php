@@ -57,6 +57,7 @@ $config = [
         ],
         */
     ],
+
     'aliases' => [
         '@imagePath' => "@app/runtime/image",
     ],

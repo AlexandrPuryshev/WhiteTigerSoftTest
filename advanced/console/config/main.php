@@ -20,6 +20,22 @@ return [
                 ],
             ],
         ],
+        'websocket' => [
+            'class' => 'morozovsk\yii2websocket\Connection',
+            'servers' => [
+                'chat3' => [
+                    'class' => 'morozovsk\\websocketxamples\\chat3\\server\\Chat3WebsocketDaemonHandler',
+                    'pid' => 'tmp/websocket_chat.pid',
+                    'websocket' => 'tcp://127.0.0.1:8004',
+                    'localsocket' => 'tcp://127.0.0.1:8010',
+                    //'master' => 'tcp://127.0.0.1:8020',
+                    //'eventDriver' => 'event'
+                ]
+            ],
+        ],
+    ],
+    'controllerMap' => [
+        'websocket' => 'morozovsk\yii2websocket\console\controllers\WebsocketController'
     ],
     'params' => $params,
 ];
