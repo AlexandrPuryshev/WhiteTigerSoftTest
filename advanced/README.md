@@ -34,3 +34,7 @@
             ],
         ];
 7) выполнить команду php yii migrate
+
+8) Скопировать содержимое папки copyToMorozovsk с заменой из папки (папка проекта)\webSocketServer в папку (папка проекта)\vendor\morozovsk
+
+9) Запустить websocket сервер для сообщений командой yii websocket/start chat3
