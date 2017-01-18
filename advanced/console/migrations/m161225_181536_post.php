@@ -1,7 +1,7 @@
 <?php
 
 use yii\db\Migration;
-use common\models\Post;
+use common\models\base\PostBase;
 
 class m161225_181536_post extends Migration
 {
@@ -16,7 +16,7 @@ class m161225_181536_post extends Migration
             'categoryId' => $this->integer(),
             'authorId' => $this->integer(),
             'image' => $this->string(),
-            'publishStatus' => "enum('" . Post::STATUS_DRAFT . "','" . Post::STATUS_PUBLISH . "') NOT NULL DEFAULT '" . Post::STATUS_DRAFT . "'",
+            'publishStatus' => "enum('" . PostBase::STATUS_DRAFT . "','" . PostBase::STATUS_PUBLISH . "') NOT NULL DEFAULT '" . PostBase::STATUS_DRAFT . "'",
             'createdAt' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',   
             'updatedAt' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
         ]);
