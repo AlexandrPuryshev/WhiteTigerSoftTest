@@ -1,5 +1,8 @@
 <?php
 
+namespace frontend\views\user;
+
+use Yii;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -9,14 +12,16 @@ use yii\widgets\DetailView;
 $this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+Yii::warning($model->id) 
 ?>
 
 <head>
     <script>
         $(function(){
             document.cookie = '';
+
             function wsStart() {
-                ws = new WebSocket("ws://127.0.0.1:8004/userId=" + Math.round(Math.random()*10000));
+                ws = new WebSocket("ws://127.0.0.1:8004/userId=" + <?= json_encode($model->id) ?>);
 
                 ws.onopen = function() { $("#chat").append("<p>система: соединение открыто</p>"); };
                 ws.onclose = function() { $("#chat").append("<p>система: соединение закрыто, пытаюсь переподключиться</p>"); setTimeout(wsStart, 1000);};
