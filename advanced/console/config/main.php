@@ -24,7 +24,7 @@ return [
             'class' => 'morozovsk\yii2websocket\Connection',
             'servers' => [
                 'chat3' => [
-                    'class' => 'webSocketServer\server\Chat3WebsocketDaemonHandler',
+                    'class' => 'common\components\server\Chat3WebsocketDaemonHandler',
                     'pid' => dirname(__DIR__).'/tmp/websocket_chat.pid',
                     'websocket' => 'tcp://127.0.0.1:8004',
                     'localsocket' => 'tcp://127.0.0.1:8010',
@@ -35,7 +35,7 @@ return [
         ],
     ],
     'controllerMap' => [
-        'websocket' => dirname(__DIR__).'\..\webSocketServer\MainWebsocketController'
+        'websocket' => 'common\components\MainWebsocketController'
     ],
     'params' => $params,
 ];

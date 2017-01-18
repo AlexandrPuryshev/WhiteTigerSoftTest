@@ -1,6 +1,6 @@
 <?php
 
-namespace webSocketServer;
+namespace common\components;
 
 use Yii;
 use morozovsk\yii2websocket\console\controllers\WebsocketController;

@@ -1,6 +1,6 @@
 <?php
 
-namespace webSocketServer;
+namespace common\components;
 use morozovsk\websocket\Server;
 
 class MainServer extends Server

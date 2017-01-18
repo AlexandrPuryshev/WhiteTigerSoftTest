@@ -1,9 +1,11 @@
 <?php
 
-namespace vendor\morozovsk\websocketexamples\chat3\server;
+namespace common\components\server;
+
+use common\components\MainDaemon;
 
 //пример реализации чата
-class Chat3WebsocketDaemonHandler extends \morozovsk\websocket\Daemon
+class Chat3WebsocketDaemonHandler extends MainDaemon
 {
     public $userIds = [];
     protected function onOpen($connectionId, $info) {//вызывается при соединении с новым клиентом
@@ -23,7 +25,8 @@ class Chat3WebsocketDaemonHandler extends \morozovsk\websocket\Daemon
         unset($this->userIds[$connectionId]);
     }
 
-    protected function onMessage($connectionId, $data, $type) {//вызывается при получении сообщения от клиента
+    protected function onMessage($connectionId, $data, $type) 
+    {//вызывается при получении сообщения от клиента
         if (!strlen($data)) {
             return;
         }
