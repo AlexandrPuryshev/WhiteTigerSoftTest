@@ -1,9 +1,9 @@
 <?php
 
-namespace frontend\controllers;
+namespace common\controllers;
 
 use Yii;
-use frontend\models\User;
+use common\models\base\UserBase;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -13,7 +13,7 @@ use yii\filters\VerbFilter;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends Controller
+class UserControllerBase extends Controller
 {
     public function behaviors()
     {
@@ -27,12 +27,12 @@ class UserController extends Controller
                     ],
                 ],
             ],
-            /*'verbs' => [
+            'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['user'],
                 ],
-            ],*/
+            ],
         ];
     }
 
@@ -43,7 +43,7 @@ class UserController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => User::find(),
+            'query' => UserBase::find(),
         ]);
 
         return $this->render('index', [
@@ -122,7 +122,7 @@ class UserController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne($id)) !== null) {
+        if (($model = UserBase::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
