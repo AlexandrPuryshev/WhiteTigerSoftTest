@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Post;
+use frontend\models\Post;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;

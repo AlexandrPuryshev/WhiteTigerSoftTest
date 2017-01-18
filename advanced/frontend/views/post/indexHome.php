@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 
-namespace frontend\views\site;
+namespace frontend\views\post;
 
 use Yii;
 use yii\helpers\Html;
@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php Pjax::begin(); ?>
         <?php
-            foreach ($models as $post) {
+            foreach ($models->models as $post) {
                 echo $this->render('shortViewHome', [
                     'model' => $post
                 ]);

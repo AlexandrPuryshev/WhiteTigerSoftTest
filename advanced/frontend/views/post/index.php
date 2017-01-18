@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yii\widgets\LinkPager;
+use yii\grid\GridView;
 
 
 /* @var $this yii\web\View */
@@ -33,13 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php Pjax::begin(); ?>
     <?php
-        foreach ($models as $post) {
+        foreach ($models->models as $post) {
             echo $this->render('shortView', [
                 'model' => $post
             ]);
         }
         echo LinkPager::widget([
-            'pagination' => $pages,
+            'pagination'=>$models->pagination,
         ]);
     ?>
     <?php Pjax::end(); ?>
