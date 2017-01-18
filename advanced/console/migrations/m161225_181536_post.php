@@ -8,14 +8,6 @@ class m161225_181536_post extends Migration
 
     public function safeUp()
     {
-
-        $tableOptions = null;
-
-        if ($this->db->driverName === 'mysql') {
-            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
-        }
-
-
         $this->createTable('{{%post}}', [
             'id' => $this->primaryKey(),
             'title' => $this->string()->notNull(),
@@ -25,9 +17,9 @@ class m161225_181536_post extends Migration
             'authorId' => $this->integer(),
             'image' => $this->string(),
             'publishStatus' => "enum('" . Post::STATUS_DRAFT . "','" . Post::STATUS_PUBLISH . "') NOT NULL DEFAULT '" . Post::STATUS_DRAFT . "'",
-            'createdAt' => $this->string()->notNull(),
-            'updatedAt' => $this->string()->notNull(),
-        ], $tableOptions);
+            'createdAt' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',   
+            'updatedAt' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+        ]);
 
          $this->addForeignKey(
             'FK_post_author', '{{%post}}', 'authorId', '{{%user}}', 'id', 'SET NULL', 'CASCADE'

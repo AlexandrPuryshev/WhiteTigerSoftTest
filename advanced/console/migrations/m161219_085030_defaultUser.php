@@ -14,9 +14,7 @@ class m161219_085030_defaultUser extends Migration
             'passwordHash' => Yii::$app->security->generatePasswordHash(Yii::$app->params['adminPassword']),
             'email' => Yii::$app->params['adminEmail'],
             'role' => User::ROLE_ADMIN,
-            'status' => User::STATUS_ACTIVE,
-            'createdAt' => new Expression('NOW()'),
-            'updatedAt' => new Expression('NOW()')
+            'status' => User::STATUS_ACTIVE
         ]);
     }
 }
