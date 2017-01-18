@@ -9,10 +9,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
 
-$this->title = $model->username;
+$this->title = $modelThisView->username;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-Yii::warning($model->id) 
+Yii::warning($myModel->id) 
 ?>
 
 <head>
@@ -21,10 +21,12 @@ Yii::warning($model->id)
             document.cookie = '';
 
             function wsStart() {
-                ws = new WebSocket("ws://127.0.0.1:8004/userId=" + <?= json_encode($model->id) ?>);
+                ws = new WebSocket("ws://127.0.0.1:8004/userId=" + <?= json_encode($myModel->id) ?> + "&viewId=" + <?= json_encode($modelThisView->id) ?> );
 
                 ws.onopen = function() { $("#chat").append("<p>система: соединение открыто</p>"); };
+
                 ws.onclose = function() { $("#chat").append("<p>система: соединение закрыто, пытаюсь переподключиться</p>"); setTimeout(wsStart, 1000);};
+                
                 ws.onmessage = function(evt) { $("#chat").append("<p>"+evt.data+"</p>"); $('#chat').scrollTop($('#chat')[0].scrollHeight);};
             }
 
@@ -45,7 +47,7 @@ Yii::warning($model->id)
 
 
         <?= DetailView::widget([
-            'model' => $model,
+            'model' => $modelThisView,
             'attributes' => [
                 'id',
                 'username',

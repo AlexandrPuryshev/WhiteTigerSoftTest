@@ -41,7 +41,8 @@ class UserController extends UserControllerBase
     public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'modelThisView' => $this->findModel($id),
+            'myModel' => $this->findModel(Yii::$app->user->id),
         ]);
     }
 }

@@ -2,22 +2,35 @@
 
 namespace common\components\server;
 
+use common\models\base\UserBase;
 use common\components\MainDaemon;
 
 //пример реализации чата
 class Chat3WebsocketDaemonHandler extends MainDaemon
 {
     public $userIds = [];
-    protected function onOpen($connectionId, $info) {//вызывается при соединении с новым клиентом
-        $message = 'пользователь #' . $connectionId . ' : ' /*var_export($info, true)*/ . ' ' . stream_socket_get_name($this->clients[$connectionId], true);
 
-        foreach ($this->clients as $clientId => $client) {
-            $this->sendToClient($clientId, $message);
-        }
+    //вызывается при соединении с новым клиентом
+    protected function onOpen($connectionId, $info) 
+    {
 
         $info['GET'];//or use $info['Cookie'] for use PHPSESSID or $info['X-Real-IP'] if you use proxy-server like nginx
         parse_str(substr($info['GET'], 1), $_GET);//parse get-query
-        var_export($info['GET']);
+
+        $userModel = UserBase::find()->where(['id' => $_GET['userId']])->one();
+        $viewModel = UserBase::find()->where(['id' => $_GET['viewId']])->one();
+
+        //var_export($userModel);
+
+        //$message = 'пользователь ' . $userModel->username; /*$connectionId . ' : ' var_export($info, true)*/ // . ' ' . stream_socket_get_name($this->clients[$connectionId], true);
+        $message = null;
+        //foreach ($this->clients as $clientId => $client) {
+        $this->sendToClient($_GET['userId'], $message);
+        //}
+
+        //var_export("\nUser id: " . $_GET['userId']);
+        //var_export("View id: " . $_GET['viewId']);
+
         $this->userIds[$connectionId] = $_GET['userId'];
     }
 
@@ -36,9 +49,9 @@ class Chat3WebsocketDaemonHandler extends MainDaemon
         //echo $data . "\n";
         $message = 'пользователь #' . $connectionId . ' : ' . strip_tags($data);
 
-        foreach ($this->clients as $clientId => $client) {
-            $this->sendToClient($clientId, $message);
-        }
+        //foreach ($this->clients as $clientId => $client) {
+        $this->sendToClient($clientId, $message);
+       // }
     }
 
     protected function onServiceMessage($connectionId, $data) {
