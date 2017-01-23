@@ -13,11 +13,14 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'css/messenger.css',
     ];
     public $js = [
+        'js/messenger.js',
+        'js/client.js'
     ];
     public $jsOptions = array(
-    'position' => \yii\web\View::POS_HEAD
+     'position' => \yii\web\View::POS_HEAD
     );
     public $depends = [
         'yii\web\YiiAsset',

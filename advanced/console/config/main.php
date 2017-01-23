@@ -19,23 +19,10 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
-        ],  
-        'websocket' => [
-            'class' => 'morozovsk\yii2websocket\Connection',
-            'servers' => [
-                'chat3' => [
-                    'class' => 'common\components\server\Chat3WebsocketDaemonHandler',
-                    'pid' => dirname(__DIR__).'/tmp/websocket_chat.pid',
-                    'websocket' => 'tcp://127.0.0.1:8004',
-                    'localsocket' => 'tcp://127.0.0.1:8010',
-                    //'master' => 'tcp://127.0.0.1:8020',
-                    //'eventDriver' => 'event'
-                ]
-            ],
-        ],
-    ],
-    'controllerMap' => [
-        'websocket' => 'common\components\MainWebsocketController'
+        ], 
+         'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ], 
     ],
     'params' => $params,
 ];

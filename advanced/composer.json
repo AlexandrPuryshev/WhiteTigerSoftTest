@@ -18,11 +18,12 @@
         "yiisoft/yii2": "~2.0.6",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
-        "morozovsk/websocket": "^4.2",
-        "morozovsk/websocket-examples": "^1.1",
-        "morozovsk/yii2-websocket": "^1.0"
+        "cboden/ratchet": "0.3.*",
+        "kartik-v/yii2-widget-fileinput": "*",
+        "troy/yii2-image-upload": "*"
     },
     "require-dev": {
+        "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",
@@ -34,12 +35,28 @@
         "process-timeout": 1800
     },
     "extra": {
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission": [
+                {
+                    "frontend/runtime": "0777",
+                    "frontend/web/assets": "0777",
+                    "yii": "0755"
+                }
+            ],
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        },
         "asset-installer-paths": {
             "npm-asset-library": "vendor/npm",
             "bower-asset-library": "vendor/bower"
         }
     },
     "scripts": {
-        "post-install-cmd": "php init --env=Development --overwrite=n"
+        "post-install-cmd": "php init --env=Development --overwrite=n",
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::postCreateProject"
+        ]
     }
+
 }

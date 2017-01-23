@@ -45,6 +45,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
         $menuItems[] = ['label' => Yii::$app->user->identity->username, 'items' => [
+                    ['label' => 'Messages', 'url' => ['/messenger']],
                     ['label' => 'List of users', 'url' => ['/user']],
                     ['label' => 'My Categoryes', 'url' => ['/category']],
                     ['label' => 'My Posts', 'url' => ['/post']],

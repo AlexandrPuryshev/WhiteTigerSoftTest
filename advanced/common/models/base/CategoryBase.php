@@ -37,8 +37,9 @@ class CategoryBase extends \yii\db\ActiveRecord
         ];
     }
 
+
     /**
-     * @inheritdoc
+     * @return attribute
      */
     public function attributeLabels()
     {
