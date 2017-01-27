@@ -54,7 +54,7 @@ class CategoryBase extends \yii\db\ActiveRecord
      * Возвращает список постов принадлежащих категории.
      * @return ActiveDataProvider
      */
-    public function getPosts()
+    /*public function getPosts()
     {
         return new ActiveDataProvider([
             'query' => PostBase::find()
@@ -63,18 +63,38 @@ class CategoryBase extends \yii\db\ActiveRecord
                     'publish_status' => PostBase::STATUS_PUBLISH
                 ])
         ]);
+    }*/
+
+    /**
+     * Возвращает список постов принадлежащих категории.
+     * @return ActiveQuery
+     */
+    public function findPostsByCategoryId()
+    {
+        return self::find()->where([
+                    'categoryId' => $this->id,
+        ]);
+    }
+
+    /**
+     * Возвращает список категорий
+     * @return ActiveQuery
+     */
+    public function findCategoryes()
+    {
+        return CategoryBase::find();
     }
 
      /**
      * Возвращает список категорий
      * @return ActiveDataProvider
      */
-    public function getCategories()
+    /*public function getCategories()
     {
         return new ActiveDataProvider([
             'query' => CategoryBase::find()
         ]);
-    }
+    }*/
 
      /**
      * Возвращает модель категории.

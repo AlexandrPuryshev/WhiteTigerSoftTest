@@ -67,9 +67,14 @@ class PostControllerBase extends Controller
      **/
     protected function renderIndex($dataProvider, $CategoryBase, $whatRender)
     {
+    	$postQuery = $CategoryBase->findCategoryes();
+    	$dataProvider = new ActiveDataProvider([
+    			'query' => $postQuery,
+    	]);
+
         return $this->render($whatRender, [
             'models' => $dataProvider,
-            'categories' => $CategoryBase->getCategories(),
+            'categories' => $dataProvider,
         ]);
     }
 
