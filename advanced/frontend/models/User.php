@@ -1,12 +1,9 @@
 <?php
-
 namespace frontend\models;
-
 use Yii;
-use common\models\base\UserBase;
 
+use common\models\db\UserModel;
 
-class User extends UserBase
+class User extends UserModel
 {
-
 }

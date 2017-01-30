@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'id',
             'username',
             //'auth_key',
             //'password_hash',
@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
             //'status',
             // 'created_at',
             // 'updated_at',
-
             [   
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view}',

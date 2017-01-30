@@ -9,10 +9,11 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
 
-$this->title = $modelThisView->username;
+//$this->title = $modelThisView->username;
+$this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-Yii::warning($myModel->id) 
+//Yii::warning($myModel->id) 
 ?>
 
 <head>
@@ -27,9 +28,10 @@ Yii::warning($myModel->id)
 
 
         <?= DetailView::widget([
-            'model' => $modelThisView,
+            //'model' => $modelThisView,
+            'model' => $model,
             'attributes' => [
-                'id',
+                //'id',
                 'username',
                 //'auth_key',
                 //'password_hash',

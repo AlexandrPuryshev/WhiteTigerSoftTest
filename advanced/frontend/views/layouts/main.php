@@ -38,7 +38,6 @@ AppAsset::register($this);
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'About', 'url' => ['/site/about']],
         ['label' => 'Contact', 'url' => ['/site/contact']],
-        ['label' => 'Hello', 'url' => ['/site/say']],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
@@ -47,9 +46,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => Yii::$app->user->identity->username, 'items' => [
                     ['label' => 'Messages', 'url' => ['/messenger']],
                     ['label' => 'List of users', 'url' => ['/user']],
-                    ['label' => 'My Categoryes', 'url' => ['/category']],
                     ['label' => 'My Posts', 'url' => ['/post']],
-                    ['label' => 'My Comments', 'url' => ['/comment']],
                     [
                        'label' => 'Logout',
                        'url' => ['/site/logout'],

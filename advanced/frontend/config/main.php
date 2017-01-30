@@ -6,6 +6,9 @@ $params = array_merge(
     require(__DIR__ . '/params-local.php')
 );
 
+Yii::setAlias('webroot', dirname(__DIR__) . '/web');
+Yii::setAlias('web', exec('hostname'));
+
 $config = [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
@@ -60,9 +63,8 @@ $config = [
         ],
         */
     ],
-
     'aliases' => [
-        '@imagePath' => "@app/runtime/image",
+        '@imageUrlPath' => 'image',
     ],
     'params' => $params,
 ];

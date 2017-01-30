@@ -1,7 +1,6 @@
 <?php
 
 use yii\db\Migration;
-use common\models\Comment;
 
 class m161225_181542_comment extends Migration
 {
@@ -9,6 +8,7 @@ class m161225_181542_comment extends Migration
     {
         $this->createTable('{{%comment}}', [
             'id' => $this->primaryKey(),
+            'parentId' => $this->integer(),
             'title' => $this->string()->notNull(),
             'content' => $this->string()->notNull(),
             'postId' => $this->integer(),

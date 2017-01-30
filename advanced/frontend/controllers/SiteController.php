@@ -1,28 +1,53 @@
 <?php
 namespace frontend\controllers;
-
 use Yii;
-use common\controllers\SiteControllerBase;
-use frontend\controllers\PostController;
+use frontend\controllers\PostControllerForHome;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\User;
 use common\models\LoginForm;
-
+use yii\web\Controller;
 /**
  * Site controller
  */
-class SiteController extends SiteControllerBase
+class SiteController extends Controller
 {
-	 /**
-	 * Resets password.
-	 *
-	 * @param string $token
-	 * @return mixed
-	 * @throws BadRequestHttpException
-	 */
+
+    /**
+     * set alias path for image
+    */
+    /*public function init() 
+    {
+         Yii::setAlias('@imageUrlPath', Yii::$app->request->hostInfo . Yii::getAlias('@web') . '\\image');
+         Yii::setAlias('@imagePath', Yii::getAlias('@app') . '\\web\\image');
+    }*/
+
+
+    /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
+        ];
+    }
+    
+     /**
+     * Resets password.
+     *
+     * @param string $token
+     * @return mixed
+     * @throws BadRequestHttpException
+     */
     public function actionResetPassword($token)
     {
         try {
@@ -30,19 +55,15 @@ class SiteController extends SiteControllerBase
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
             Yii::$app->session->setFlash('success', 'New password was saved.');
-
             return $this->goHome();
         }
-
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
     }
-
-	/**
+    /**
      * Requests password reset.
      *
      * @return mixed
@@ -53,19 +74,16 @@ class SiteController extends SiteControllerBase
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
-
                 return $this->goHome();
             } else {
                 Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for email provided.');
             }
         }
-
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
         ]);
     }
-
-	/**
+    /**
      * Signs user up.
      *
      * @return mixed
@@ -80,14 +98,11 @@ class SiteController extends SiteControllerBase
                 }
             }
         }
-
         return $this->render('signup', [
             'model' => $model,
         ]);
     }
-
-
-	/**
+    /**
      * Displays about page.
      *
      * @return mixed
@@ -96,9 +111,7 @@ class SiteController extends SiteControllerBase
     {
         return $this->render('about');
     }
-
-
-	/**
+    /**
      * Displays contact page.
      *
      * @return mixed
@@ -112,7 +125,6 @@ class SiteController extends SiteControllerBase
             } else {
                 Yii::$app->session->setFlash('error', 'There was an error sending email.');
             }
-
             return $this->refresh();
         } else {
             return $this->render('contact', [
@@ -120,8 +132,7 @@ class SiteController extends SiteControllerBase
             ]);
         }
     }
-
-	/**
+    /**
      * Logs out the current user.
      *
      * @return mixed
@@ -129,11 +140,9 @@ class SiteController extends SiteControllerBase
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
-
-	/**
+    /**
      * Logs in a user.
      *
      * @return mixed
@@ -143,7 +152,6 @@ class SiteController extends SiteControllerBase
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
@@ -153,7 +161,6 @@ class SiteController extends SiteControllerBase
             ]);
         }
     }
-
     /**
      * Displays homepage.
      *
@@ -161,6 +168,6 @@ class SiteController extends SiteControllerBase
     */
     public function actionIndex()
     {
-        return Yii::$app->runAction('post/home', null);
+        return Yii::$app->runAction('home/home', null);
     }
 }

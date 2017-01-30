@@ -1,6 +1,6 @@
 <?php
 /* @var $this yii\web\View */
-use frontend\models\Message;
+use common\models\db\MessageModel;
 use kartik\file\FileInput;
 use yii\helpers\Url;
 use frontend\models;
@@ -10,7 +10,7 @@ $this->title = 'Messenger';
 <div class="site-index">
     <div class="messages">
         <h1>Messages</h1>
-        <?php foreach (Message::find()->all() as $message): ?>
+        <?php foreach (MessageModel::find()->all() as $message): ?>
             <div class="message" id="<?php echo $message->id ?>">
                 <h4><?php echo $message->userName ?> says:</h4>
                 <?php echo $message->content ?>
