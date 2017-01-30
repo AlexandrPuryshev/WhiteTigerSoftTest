@@ -1,12 +1,11 @@
 <?php
 
-namespace frontend\models;
+namespace common\models\db;
 
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
-use common\models\base\CommentBase;
 
 /**
  * Модель комментариев.
@@ -22,7 +21,20 @@ use common\models\base\CommentBase;
  * @property Post $post
  * @property User $author
  */
-class Comment extends CommentBase
+class CommentModel extends Comment
 {
-
+    /**
+     * Возвращает комментарий.
+     * @param int $id идентификатор комментария
+     * @throws NotFoundHttpException
+     * @return Comment
+     */
+    protected function findModel($id)
+    {
+        if (($model = CommentModel::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
 }

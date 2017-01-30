@@ -1,6 +1,10 @@
 <?php
+
+use common\models\db\CommentModel;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\data\ActiveDataProvider;
+use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $model common\models\Post */
 $this->title = $model->title;
@@ -25,7 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
             'title',
             'anons:ntext',
             'content:ntext',
@@ -34,6 +37,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'publishStatus',
             'createdAt',
         ],
+    ]) ?>
+
+    <h2> Comments </h2>
+    <?php Pjax::begin(); ?>
+        <?= $this->render('shortViewComments',[
+            'model' => $model,
+        ]) ?>
+    <?php Pjax::end(); ?>
+
+    <?= $this->render('//comment/_form', [
+        'model' => $commentForm
     ]) ?>
 
 </div>

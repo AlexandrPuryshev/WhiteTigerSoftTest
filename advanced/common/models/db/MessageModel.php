@@ -1,20 +1,12 @@
 <?php
 
-namespace common\models\base;
+namespace common\models\db;
 
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
-class MessageBase extends ActiveRecord
+class MessageModel extends Message
 {
-
-	/**
-	 * @return string
-	 */
-	public static function tableName() 
-	{
-		return '{{%messsege}}';
-	}
 
 	/**
 	 * @return array

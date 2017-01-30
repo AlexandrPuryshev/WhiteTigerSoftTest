@@ -1,6 +1,8 @@
 <?php
 
-use app\models\Post;
+namespace frontend\views\post;
+
+use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -12,16 +14,16 @@ use yii\widgets\ActiveForm;
 
 <div class="comment-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+        $form = ActiveForm::begin(['action' => $model->action]);
+    ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'content')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'postId')->dropDownList(ArrayHelper::map($post, 'id', 'title'))?>
+    <?= $form->field($model, 'parentId')->hiddenInput()->label(false) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+    <?= $form->field($model, 'content')->textarea(['maxlength' => 255]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton('Create', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

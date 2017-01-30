@@ -1,6 +1,6 @@
 <?php
 
-use frontend\models\Post;
+use common\models\db\PostModel;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -30,7 +30,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'publishStatus')->dropDownList(
-        [Post::STATUS_DRAFT => 'Draft', Post::STATUS_PUBLISH => 'Published']
+        [PostModel::STATUS_DRAFT => 'Draft', PostModel::STATUS_PUBLISH => 'Published']
     ) ?>
 
 
