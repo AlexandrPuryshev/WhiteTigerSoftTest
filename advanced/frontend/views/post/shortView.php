@@ -19,12 +19,16 @@ use \yii\web\YiiAsset;
 	<?= Html::endForm() ?>
 
 	<div class="meta">
+	<br>
+	
 	<?php
 		if(isset($model->image))
 		{ 
 			echo Html::img(Url::to(Yii::getAlias('@imageUrlPath')) . '/' . $model->image, ['style' => 'width: 100%;']);
 		}
 	?>
+
+	<br>
 	    <p> Author: <?= $model->author->username ?> </p>
 	    <p> Data of publish: <?= $model->createdAt ?> </p>
 	    <?php
@@ -37,6 +41,8 @@ use \yii\web\YiiAsset;
 	<div class="content">
 	    Description: <?= $model->anons ?>
 	</div>
+
+	<br>
 
 	<?= Html::a('Read more', ['post/view', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
 </div>

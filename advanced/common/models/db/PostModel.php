@@ -99,6 +99,20 @@ class PostModel extends Post
         }
     }
 
+     /**
+     * Проверка на автора поста
+     * @return bool
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public static function isUserAuthor()
+    {   
+        $authorId = Post::find()->one()->getAuthor()->one()->id;
+        if ($authorId == null) {
+            throw new NotFoundHttpException("Null request in isUserAuthor() by id");
+        }
+        return $authorId == Yii::$app->user->id;
+    }
+
     /**
      * Возвращает опубликованные комментарии
      * @return ActiveDataProvider

@@ -8,7 +8,7 @@ use \yii\web\YiiAsset;
 
 <div class="comments">
 	<?php /** @var Comment $comment */ ?>
-	<?php foreach($model->getPublishedComments()->models as $comment) : ?>
+	<?php foreach($model->comments as $comment) : ?>
 	    <div class="comment">
 	        <h3><?= htmlspecialchars($comment->title) ?></h3>
 	        <div class="meta">Author: <strong><?=isset($comment->author) ? $comment->author->username : null?></strong></div>

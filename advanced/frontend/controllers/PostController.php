@@ -32,14 +32,19 @@ class PostController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['update', 'delete'],
+                'only' => ['view', 'index', 'create', 'update', 'delete'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['create', 'view', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ], 
+                    [
+                        'actions' => ['update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
-                            if ($this->isUserAuthor()) {
+                            if (PostModel::isUserAuthor()) {
                                 return true;
                             }
                             return false;
@@ -109,14 +114,8 @@ class PostController extends Controller
     {
         $postModel = new PostModel();
 
-        ///TODO: not working
-        $dataProviderComment = new ActiveDataProvider([
-            'query' => $postModel->getComments(),
-        ]);
-
         return $this->render('view', [
             'model' => $this->findModel($id),
-            //'dataProviderComment' => $dataProviderComment,
             'commentForm' => new CommentForm(Url::to(['comment/add', 'id' => $id])),
         ]);
     }
@@ -187,14 +186,15 @@ class PostController extends Controller
      * @return bool
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function isUserAuthor()
+    /*protected function isUserAuthor()
     {   
+        Yii::warning(PostModel::find()->one()->getAuthor()->one()->id);
         $requestModel = $this->findModel(Yii::$app->request->get('id'));
         if ($requestModel == null) {
             throw new NotFoundHttpException("Null request in isUserAuthor() by id");
         }
         return $requestModel->author->id == Yii::$app->user->id;
-    }
+    }*/
 
     /**
      * Finds the Post model based on its primary key value.
