@@ -168,6 +168,6 @@ class SiteController extends Controller
     */
     public function actionIndex()
     {
-        return Yii::$app->runAction('home/home', null);
+        return Yii::$app->runAction('post/home', null);
     }
 }

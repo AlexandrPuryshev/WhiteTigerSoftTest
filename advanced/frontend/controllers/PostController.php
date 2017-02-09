@@ -69,7 +69,7 @@ class PostController extends Controller
      **/
     protected function renderIndex($dataProvider, $сategoryModel, $whatRender)
     {
-    	$postQuery = $сategoryModel->findCategoryes();
+    	$postQuery = $categoryModel->findCategoryes();
 
     	$dataProviderCategory = new ActiveDataProvider([
     			'query' => $postQuery,
@@ -81,7 +81,8 @@ class PostController extends Controller
         ]);
     }
 
-    protected function newPostDataProvider($postQuery){
+    protected function getPostDataProvider($postQuery)
+    {
         $dataProvider = new ActiveDataProvider([
             'query' => $postQuery,
             'pagination' => [
@@ -93,15 +94,23 @@ class PostController extends Controller
         return $dataProvider;
     }
 
+    public function actionHome()
+    {
+        $category = new CategoryModel();
+        $postQuery = PostModel::findPublishedPosts();
+        $dataProvider = getPostDataProvider($postQuery);
+        return renderIndex($dataProvider, $category, 'indexHome');
+    }
+
     /**
      * Список постов.
      * @return string
      */
     public function actionIndex()
     {
-        $сategoryModel = new CategoryModel();
+        $categoryModel = new CategoryModel();
         $postQuery = PostModel::findMyPublishedPosts();
-        $dataProvider = $this->newPostDataProvider($postQuery);
+        $dataProvider = $this->getPostDataProvider($postQuery);
         return $this->renderIndex($dataProvider, $сategoryModel, 'index');
     }
 
@@ -120,13 +129,15 @@ class PostController extends Controller
         ]);
     }
 
-    private function saveModel($model, $view){
+    private function saveModel($model, $view)
+    {
         $upload = new UploadForm();
         /* push auto author id in field author_id */
         $model->authorId = Yii::$app->user->id;
         $upload->imageFile = UploadedFile::getInstance($upload, 'imageFile');
         // if you update, older image you delete, if uploading image is null
         if ($view == 'update') {
+            unlink(Yii::getAlias('@imageUrlPath'). '\\' . $upload->image);
             $model->image = null;
         }
 
