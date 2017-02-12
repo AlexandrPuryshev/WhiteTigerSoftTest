@@ -1,23 +1,32 @@
 <?php
 /* @var $this yii\web\View */
-use common\models\db\MessageModel;
+
+namespace frontend\views\messenger;
+
+use common\models\db\Message;
 use kartik\file\FileInput;
 use yii\helpers\Url;
 use frontend\models;
+use Yii;
 
 $this->title = 'Messenger';
 ?>
+
+<script>
+    var userName = "<?= Yii::$app->user->identity->username; ?>";
+</script>
+
 <div class="site-index">
     <div class="messages">
         <h1>Messages</h1>
-        <?php foreach (MessageModel::find()->all() as $message): ?>
+        <?php foreach (Message::find()->all() as $message): ?>
             <div class="message" id="<?php echo $message->id ?>">
                 <h4><?php echo $message->userName ?> says:</h4>
                 <?php echo $message->content ?>
                 <br>
                 <br>
-                <small><?php echo date("d M H:i", strtotime($message->createdAt)) ?></small>
-                <?php if ($message->userName === Yii::$app->user->identity->username): ?> 
+                <small><?php echo date("d M H:i", strtotime($message->createdAt)) ?></small>s
+                <?php if (strcasecmp($message->userName, Yii::$app->user->identity->username) == 0): ?> 
                     <br><a href="#" id="delete">Удалить</a>
                 <?php endif; ?>
             </div>
@@ -53,11 +62,13 @@ $this->title = 'Messenger';
             <h2>Upload pictures</h2>
             <?php
                 echo FileInput::widget([
-                    'name' => 'UploadForm[file]',
+                    'name' => 'UploadForm[imageFile]',
                     'pluginOptions' => [
-                        'showCaption'  => false,
-                        'showRemove'   => false,
-                        'showUpload'   => false,
+                        'showRemove'   => true,
+                        'showCaption' => true,
+                        'browseClass' => 'btn btn-primary btn-block',
+                        'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
+                        'browseLabel' =>  'Select Photo',
                         'uploadUrl'    => Url::to(['/messenger/upload']),
                         'maxFileCount' => 10
                     ],

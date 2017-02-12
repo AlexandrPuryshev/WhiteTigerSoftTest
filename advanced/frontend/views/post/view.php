@@ -1,11 +1,11 @@
 <?php
 
-use common\models\db\CommentModel;
+use common\models\db\Comment;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\data\ActiveDataProvider;
 use yii\widgets\Pjax;
-use common\models\db\PostModel;
+use common\models\db\Post;
 /* @var $this yii\web\View */
 /* @var $model common\models\Post */
 $this->title = $model->title;
@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
 
-    <?php if (PostModel::isUserAuthor()) { ?>
+    <?php if (Post::isUserAuthor()) { ?>
         <p>
             <?= Html::a('Edit', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
             <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php 
         $image = null; 
-        if (isset($model->image)) { $image = 'image/' . $model->image; } 
+        if (isset($model->image)) { $image = 'image/post/' . $model->image; } 
     ?>
 
     <?= DetailView::widget([

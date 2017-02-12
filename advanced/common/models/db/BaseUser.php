@@ -21,7 +21,7 @@ use Yii;
  * @property Comment[] $comments
  * @property Post[] $posts
  */
-class User extends \yii\db\ActiveRecord
+class BaseUser extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc

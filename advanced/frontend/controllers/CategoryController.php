@@ -7,7 +7,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\data\ActiveDataProvider;
-use common\models\db\CategoryModel;
+use common\models\db\Category;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -36,7 +36,7 @@ class CategoryController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => CategoryModel::find(),
+            'query' => Category::find(),
         ]);
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -51,18 +51,18 @@ class CategoryController extends Controller
      */
     public function actionView($id)
     {
-        $categoryModel = new CategoryModel();
+        $Category = new Category();
 
         $dataProviderPosts = new ActiveDataProvider([
-            'query' => $categoryModel->findPostsByCategoryId($id),
+            'query' => $Category->findPostsByCategoryId($id),
         ]);
 
         $dataProviderCategories = new ActiveDataProvider([
-            'query' => $categoryModel->findCategoryes(),
+            'query' => $Category->findCategoryes(),
         ]);
 
         return $this->render('view', [
-            'category' => $categoryModel->getCategory($id),
+            'category' => $Category->getCategory($id),
             'posts' => $dataProviderPosts,
             'categories' => $dataProviderCategories,
         ]);
@@ -75,7 +75,7 @@ class CategoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new CategoryModel();
+        $model = new Category();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -126,7 +126,7 @@ class CategoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = CategoryModel::findOne($id)) !== null) {
+        if (($model = Category::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

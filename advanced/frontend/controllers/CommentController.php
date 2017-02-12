@@ -3,8 +3,8 @@
 namespace frontend\controllers;
 
 use Yii;
-use common\models\db\CommentModel;
-use common\models\db\PostModel;
+use common\models\db\Comment;
+use common\models\db\Post;
 use frontend\models\CommentForm;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -61,7 +61,7 @@ class CommentController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => CommentModel::find(),
+            'query' => Comment::find(),
         ]);
 
         return $this->render('index', [
@@ -89,7 +89,7 @@ class CommentController extends Controller
      */
     public function actionCreate()
     {
-        $model = new CommentModel();
+        $model = new Comment();
         $model->authorId = Yii::$app->user->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -97,7 +97,7 @@ class CommentController extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'post' => PostModel::find()->all()
+                'post' => Post::find()->all()
             ]);
         }
     }
@@ -117,7 +117,7 @@ class CommentController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'post' => PostModel::find()->all()
+                'post' => Post::find()->all()
             ]);
         }
     }
@@ -125,7 +125,7 @@ class CommentController extends Controller
 
     public function actionAdd()
     {
-        $model = new CommentModel();
+        $model = new Comment();
 
         $commentForm = new CommentForm(Url::to(['comment/add', 'id' => Yii::$app->request->get('id')]));
         $model->postId = Yii::$app->request->get('id');
@@ -151,7 +151,7 @@ class CommentController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = CommentModel::findOne($id)) !== null) {
+        if (($model = Comment::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

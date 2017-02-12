@@ -3,91 +3,113 @@
 namespace common\models\db;
 
 use Yii;
+use yii\data\ActiveDataProvider;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
+use common\models\db\UserModel;
+use common\models\db\Comment;
+use common\models\db\Category;
 
-/**
- * This is the model class for table "social_post".
- *
- * @property integer $id
- * @property string $title
- * @property string $anons
- * @property string $content
- * @property integer $categoryId
- * @property integer $authorId
- * @property string $image
- * @property string $publishStatus
- * @property string $createdAt
- * @property string $updatedAt
- *
- * @property Comment[] $comments
- * @property User $author
- * @property Category $category
- */
-class Post extends \yii\db\ActiveRecord
+class Post extends BasePost
 {
-    /**
-     * @inheritdoc
+     /**
+     * Статус поста: опубликованн.
      */
-    public static function tableName()
+    const STATUS_PUBLISH = 'publish';
+    /**
+     * Статус поста: черновие.
+     */
+    const STATUS_DRAFT = 'draft';
+
+    /**
+     * Возвращает опубликованные комментарии
+     * @return ActiveQuery
+     */
+    public static function findPublishedComments()
     {
-        return 'social_post';
+        return self::find()->where(['publishStatus' => Comment::STATUS_PUBLISH]);
     }
+
+    /**
+     * Возвращает все опубликованные посты
+     * @return ActiveQuery
+     */
+    public static function findPublishedPosts()
+    {
+        return self::find()->orderBy(['createdAt' => SORT_DESC]);
+    }
+
+     /**
+     * Возвращает опубликованные посты автора
+     * @return ActiveQuery
+     */
+    public static function findMyPublishedPosts()
+    {
+        return self::find()->where(['authorId' => Yii::$app->user->id]);
+    }
+
 
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function afterSave($insert, $changedAttributes)
     {
-        return [
-            [['title', 'anons', 'content'], 'required'],
-            [['anons', 'content', 'publishStatus'], 'string'],
-            [['categoryId', 'authorId'], 'integer'],
-            [['createdAt', 'updatedAt'], 'safe'],
-            [['title', 'image'], 'string', 'max' => 255],
-            [['authorId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['authorId' => 'id']],
-            [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['categoryId' => 'id']],
-        ];
+        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
-     * @inheritdoc
+     * Опубликован ли пост.
+     * @return bool
      */
-    public function attributeLabels()
+    protected function isPublished()
     {
-        return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'anons' => 'Anons',
-            'content' => 'Content',
-            'categoryId' => 'Category ID',
-            'authorId' => 'Author ID',
-            'image' => 'Image',
-            'publishStatus' => 'Publish Status',
-            'createdAt' => 'Created At',
-            'updatedAt' => 'Updated At',
-        ];
+        return $this->publishStatus === self::STATUS_PUBLISH;
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * Возвращает модель поста.
+     * @param int $id
+     * @throws NotFoundHttpException в случае, когда пост не найден или не опубликован
+     * @return Post
      */
-    public function getComments()
+    public function getPost($id)
     {
-        return $this->hasMany(Comment::className(), ['postId' => 'id']);
+        if (
+            ($model = Post::findOne($id)) !== null &&
+            $model->isPublished()
+        ) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested post does not exist.');
+        }
+    }
+
+     /**
+     * Проверка на автора поста
+     * @return bool
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public static function isUserAuthor()
+    {   
+        $authorId = Post::find()->one()->getAuthor()->one()->id;
+        if ($authorId == null) {
+            throw new NotFoundHttpException("Null request in isUserAuthor() by id");
+        }
+        return $authorId == Yii::$app->user->id;
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * Возвращает опубликованные комментарии
+     * @return ActiveDataProvider
      */
-    public function getAuthor()
+    public function getPublishedComments()
     {
-        return $this->hasOne(User::className(), ['id' => 'authorId']);
+        return new ActiveDataProvider([
+            'query' => parent::getComments(),
+        ]);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategory()
-    {
-        return $this->hasOne(Category::className(), ['id' => 'categoryId']);
-    }
+
 }

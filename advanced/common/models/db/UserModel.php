@@ -9,7 +9,7 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 
-class UserModel extends User implements \yii\web\IdentityInterface
+class UserModel extends BaseUser implements \yii\web\IdentityInterface
 {
 
     const STATUS_DELETED = 0;

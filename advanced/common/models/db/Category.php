@@ -3,55 +3,52 @@
 namespace common\models\db;
 
 use Yii;
+use yii\data\ActiveDataProvider;
+use yii\db\ActiveRecord;
+use yii\web\NotFoundHttpException;
 
 /**
- * This is the model class for table "social_category".
+ * This is the model class for table "{{%category}}".
  *
  * @property integer $id
  * @property string $name
  * @property string $description
- *
- * @property Post[] $posts
  */
-class Category extends \yii\db\ActiveRecord
+class Category extends BaseCategory
 {
     /**
-     * @inheritdoc
+     * Возвращает список постов принадлежащих категории.
+     * @return ActiveQuery
      */
-    public static function tableName()
+    public function findPostsByCategoryId($id)
     {
-        return 'social_category';
+        return Post::find()->where([
+                'categoryId' => $id,
+        ]);
     }
 
     /**
-     * @inheritdoc
+     * Возвращает список категорий
+     * @return ActiveQuery
      */
-    public function rules()
+    public function findCategoryes()
     {
-        return [
-            [['name'], 'required'],
-            [['name', 'description'], 'string', 'max' => 255],
-            [['name'], 'unique'],
-        ];
+        return Category::find();
     }
 
-    /**
-     * @inheritdoc
+     /**
+     * Возвращает модель категории.
+     * @param int $id идентификатор категории
+     * @throws NotFoundHttpException в случае, когда категория не найдена
+     * @return Category
      */
-    public function attributeLabels()
+    public function getCategory($id)
     {
-        return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Description',
-        ];
+        if (($model = Category::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested post does not exist.');
+        }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPosts()
-    {
-        return $this->hasMany(Post::className(), ['categoryId' => 'id']);
-    }
 }

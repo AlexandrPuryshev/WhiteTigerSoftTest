@@ -10,7 +10,7 @@ namespace frontend\views\category;
 use Yii;
 use yii\helpers\Html;
 /* @var $this yii\web\View */
-/** @var $category \common\models\db\CategoryModel текущая категория */
+/** @var $category \common\models\db\Category текущая категория */
 /** @var $categories \yii\data\ActiveDataProvider список категорий */
 /** @var $posts \yii\data\ActiveDataProvider список категорий */
 

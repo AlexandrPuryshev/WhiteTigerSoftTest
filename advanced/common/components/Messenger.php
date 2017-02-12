@@ -32,30 +32,30 @@ class Messenger implements MessageComponentInterface {
 
 	/**
 	 * @param ConnectionInterface $from
-	 * @param string              $msg
+	 * @param string              $messageInfo
 	 */
-	public function onMessage(ConnectionInterface $from, $msg) {
+	public function onMessage(ConnectionInterface $from, $messageInfo) {
 		foreach ($this->clients as $client) {
 			if ($from !== $client) {
 
-				if (isset($msg)) {
+				if (isset($messageInfo)) {
 
-					$msg = json_decode($msg);
-					switch ($msg->type) {
+					$messageInfo = json_decode($messageInfo);
+					switch ($messageInfo->type) {
 						case self::NEW_MESSAGE:
 							$client->send(json_encode([
-								'type'       => self::NEW_MESSAGE,
-								'messageId' => $msg->messageId,
-								'content'    => $msg->content,
-								'userName'  => $msg->userName,
-								'createdAt' => $msg->createdAt
+								'type'      => self::NEW_MESSAGE,
+								'idMessage' => $messageInfo->idMessage,
+								'content'   => $messageInfo->content,
+								'userName'  => $messageInfo->userName,
+								'createdAt' => $messageInfo->createdAt
 							]));
 							break;
 
 						case self::DELETE_MESSAGE:
 							$client->send(json_encode([
-								'type'       => self::DELETE_MESSAGE,
-								'messageId' => $msg->messageId,
+								'type'      => self::DELETE_MESSAGE,
+								'idMessage' => $messageInfo->idMessage,
 							]));
 							break;
 					}

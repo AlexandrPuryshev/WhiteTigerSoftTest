@@ -24,7 +24,7 @@ use \yii\web\YiiAsset;
 	<?php
 		if(isset($model->image))
 		{ 
-			echo Html::img(Url::to(Yii::getAlias('@imageUrlPath')) . '/' . $model->image, ['style' => 'width: 100%;']);
+			echo Html::img(Url::to(Yii::getAlias('@imageUrlPathPost')) . '/' . $model->image, ['style' => 'width: 100%;']);
 		}
 	?>
 

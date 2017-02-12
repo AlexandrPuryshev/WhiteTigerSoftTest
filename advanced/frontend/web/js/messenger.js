@@ -1,8 +1,10 @@
+
+
 $(function () {
 
 	var route = {
 		new_message: '?r=messenger/new-message',
-		delete_message: '?r=messenger/delete-message',
+		deleteMessage: '?r=messenger/delete-message',
 	};
 
 	var methods = {
@@ -11,7 +13,7 @@ $(function () {
 	};
 
 	var csrfToken = $('meta[name="csrf-token"]').attr("content");
-	var user = $('.dropdown-toggle')[0].innerText;
+	var user = userName;
 	var attaches = [];
 
 	var conn = new WebSocket('ws://localhost:3030');
@@ -23,25 +25,20 @@ $(function () {
 	 * @param error
 	 * @param done
 	 */
-	var ajaxRequest = function (url, data, error, done) 
-	{
-		$.ajax(
-		{
+	var ajaxRequest = function (url, data, error, done) {
+		$.ajax({
 			url: url,
 			method: 'POST',
 			data: data,
 			dataType: 'json'
-		}).error(function (d) 
-		{
+		}).error(function (d) {
 			error(d)
-		}).done(function (d) 
-		{
+		}).done(function (d) {
 			done(d);
 		});
 	};
 
-	var waitForConnection = function (callback, interval) 
-	{
+	var waitForConnection = function (callback, interval) {
 	    if (conn.readyState === 1) {
 	        callback();
 	    } else {
@@ -57,8 +54,7 @@ $(function () {
 	 * Результат открытия сокета
 	 * @param result
 	 */
-	conn.onopen = function (result) 
-	{
+	conn.onopen = function (result) {
 		console.log(result);
 	};
 
@@ -66,33 +62,31 @@ $(function () {
 	 * Рассылка сообщений подписчикам
 	 * @param result
 	 */
-	conn.onmessage = function (result) 
-	{
+	conn.onmessage = function (result) {
 		var json = JSON.parse(result.data);
-		var messageId = null;
+		var idMessage = null;
 		var content = null;
 		var userName = null;
 		var createdAt = null;
 
-		if (json !== null) 
-		{
-			switch (json['type']) 
-			{
+		if (json !== null) {
+			switch (json['type']) {
 				case methods.new_message:
-					messageId = json['messageId'];
+					idMessage = json['idMessage'];
 					content = json['content'];
 					userName = json['userName'];
 					createdAt = json['createdAt'];
 
-					addMessages(messageId, content, userName, createdAt);
+					addMessage(idMessage, content, userName, createdAt);
 
 					break;
 
 				case methods.delete_message:
-					messageId = json['messageId'];
-					deleteMessage(messageId);
+					idMessage = json['idMessage'];
+					deleteMessage(idMessage);
 
 					break;
+
 			}
 		}
 	};
@@ -100,20 +94,16 @@ $(function () {
 	/**
 	 * Отправка сообщения в чат
 	 */
-	$('#send-message').on('click', function () 
-	{
+	$('#send-message').on('click', function () {
 		var input = $('#message-text');
 		var text = input.val();
 		var content = '';
-		if (text.length > 0) 
-		{
+		if (text.length > 0) {
 			var attachToString = '';
-			$.each(attaches, function (key, value) 
-			{
-				switch (value.type) 
-				{
+			$.each(attaches, function (key, value) {
+				switch (value.type) {
 					case 'image':
-						attachToString += '<img src="messenger-master/web/storage/' + value.content + '">';
+						attachToString += '<img src="image/chat' + value.content + '">';
 						break;
 					case 'video':
 						attachToString += '<iframe src="https://www.youtube.com/embed/' + value.content + '" frameborder="0" allowfullscreen></iframe>';
@@ -129,30 +119,26 @@ $(function () {
 			ajaxRequest(
 				route.new_message,
 				{_csrf: csrfToken, content: content, userName: user},
-				function (error) 
-				{
+				function (error) {
 					console.log(error);
 				},
-				function (message) 
-				{
-					waitForConnection(function () 
-					{
+				function (message) {
+					waitForConnection(function () {
 				        conn.send(JSON.stringify({
 							type: methods.new_message,
 							content: content,
 							userName: user,
-							messageId: message.id,
+							idMessage: message.id,
 							createdAt: message.createdAt
 						}));
-				        if (typeof callback !== 'undefined') 
-				        {
+				        if (typeof callback !== 'undefined') {
 				          callback();
 				        }
 				    }, 1000);
 
 					input.val('');
 
-					addMessages(message.id, text, user, message.createdAt);
+					addMessage(message.id, text, user, message.createdAt);
 				}
 			);
 		}
@@ -161,27 +147,23 @@ $(function () {
 	/**
 	 * Удаление сообщения из чата
 	 */
-	$('.messages').on('click', '#delete', function () 
-	{
+	$('.messages').on('click', '#delete', function () {
 		var message = $(this).parent('.message');
-		var messageId = message.attr('id');
+		var idMessage = message.attr('id');
 
 		ajaxRequest(
-			route.delete_message,
-			{_csrf: csrfToken, messageId: messageId},
-			function (error) 
-			{
+			route.deleteMessage,
+			{_csrf: csrfToken, idMessage: idMessage},
+			function (error) {
 				console.log(error);
 			},
-			function () 
-			{
-				conn.send(JSON.stringify(
-				{
+			function () {
+				conn.send(JSON.stringify({
 					type: methods.delete_message,
-					messageId: messageId
+					idMessage: idMessage
 				}));
 
-				deleteMessage(messageId);
+				deleteMessage(idMessage);
 			}
 		);
 
@@ -197,15 +179,12 @@ $(function () {
 	 * @returns {string}
 	 * @param createdAt
 	 */
-	function addMessages(id, content, userName, createdAt) 
-	{
+	function addMessage(id, content, userName, createdAt) {
 		var attachToString = '';
-		$.each(attaches, function (key, value) 
-		{
-			switch (value.type) 
-			{
+		$.each(attaches, function (key, value) {
+			switch (value.type) {
 				case 'image':
-					attachToString += '<img src="messenger-master/web/storage/' + value.content + '">';
+					attachToString += '<img src="image/chat' + value.content + '">';
 					break;
 				case 'video':
 					attachToString += '<iframe src="https://www.youtube.com/embed/' + value.content + '" frameborder="0" allowfullscreen></iframe>';
@@ -217,7 +196,7 @@ $(function () {
 		});
 
 		var deleteLink = user === userName ? '<a href="#" id="delete">Удалить</a>' : '';
-		var msg = $('<div class="message" id="' + id + '"><h4>' + userName + ' says:</h4>' + content + attachToString + '<br><br><small>' + createdAt + '<br>' + deleteLink + '</div>');
+		var msg = $('<div class="message" id="' + id + '"><h4>' + userName + ' says:</h4>' + content + attachToString + '<br><br><small>' + createdAt + '</small><br>' + deleteLink + '</div>');
 
 		$('.messages').append(msg);
 		msg.hide().fadeIn(500);
@@ -226,18 +205,17 @@ $(function () {
 		$('#attaches').text('');
 	}
 
-	function deleteMessage(messageId)
-	{
-		var message = $('#' + messageId);
+	function deleteMessage(idMessage) {
+		var message = $('#' + idMessage);
 
 		message.slideUp();
 	}
 
+
 	/**
 	 * Вызов диалога для загрузки изображений
 	 */
-	$('.add-pictures-link').on('click', function () 
-	{
+	$('.add-pictures-link').on('click', function () {
 		$('.add-pictures-dialog').fadeIn();
 		$('.attach-menu').fadeOut();
 		return false;
@@ -246,14 +224,12 @@ $(function () {
 	/**
 	 * Вызов диалога для добавления видео
 	 */
-	$('.add-video-link').on('click', function () 
-	{
+	$('.add-video-link').on('click', function () {
 		$('.add-video-dialog').fadeIn();
 		return false;
 	});
 
-	$('.add-url-link').on('click', function () 
-	{
+	$('.add-url-link').on('click', function () {
 		$('.add-url-dialog').fadeIn();
 		return false;
 	});
@@ -261,8 +237,7 @@ $(function () {
 	/**
 	 * Закрытие диалогового окна
 	 */
-	$('.close-dialog').on('click', function () 
-	{
+	$('.close-dialog').on('click', function () {
 		$('.dialog').fadeOut();
 		return false;
 	});
@@ -270,10 +245,9 @@ $(function () {
 	/**
 	 *
 	 */
-	$('.add-video').on('click', function () 
-	{
-		var video_url = $('#video-url').val();
-		var youtubeId = youTubeGetId(video_url);
+	$('.add-video').on('click', function () {
+		var videoUrl = $('#video-url').val();
+		var youtubeId = youTubeGetId(videoUrl);
 
 		if (youtubeId) {
 			attaches.push({
@@ -290,8 +264,7 @@ $(function () {
 		return false;
 	});
 
-	$('.add-url').on('click', function () 
-	{
+	$('.add-url').on('click', function () {
 		var url = $('#url').val();
 
 		if (validationUrl(url)) {
@@ -313,12 +286,10 @@ $(function () {
 	 * Прослушивание события fileuploaded,
 	 * для определения какие файлы были загружены
 	 */
-	$('input[name=\'UploadForm[file]\']').on('fileuploaded', function (event, data) 
-	{
+	$('input[name=\'UploadForm[file]\']').on('fileuploaded', function (event, data) {
 		var response = data.response;
 
-		attaches.push(
-		{
+		attaches.push({
 			type: 'image',
 			content: response
 		});
@@ -331,32 +302,24 @@ $(function () {
 	 * @param url
 	 * @returns {*|Array|{index: number, input: string}}
 	 */
-	function youTubeGetId(url) 
-	{
+	function youTubeGetId(url) {
 		var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 		var video = (url.match(p)) ? RegExp.$1 : false;
 
-		if (video) 
-		{
+		if (video) {
 			return video;
-		} 
-		else 
-		{
+		} else {
 			return false;
 		}
 	}
 
-	function validationUrl(url) 
-	{
+	function validationUrl(url) {
 		var p = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
 		var link = (url.match(p)) ? RegExp.$1 : false;
 
-		if (link) 
-		{
+		if (link) {
 			return link;
-		} 
-		else 
-		{
+		} else {
 			return false;
 		}
 	}

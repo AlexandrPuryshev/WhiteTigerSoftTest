@@ -2,13 +2,13 @@
 
 namespace frontend\controllers;
 
-use common\models\db\CategoryModel;
+use common\models\db\Category;
 use common\models\db\UserModel;
 use common\models\LoginForm;
 use frontend\models\CommentForm;
-use common\models\db\CommentModel;
+use common\models\db\Comment;
 use Yii;
-use common\models\db\PostModel;
+use common\models\db\Post;
 use common\models\db\PostSearch;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -44,7 +44,7 @@ class PostController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
-                            if (PostModel::isUserAuthor()) {
+                            if (Post::isUserAuthor()) {
                                 return true;
                             }
                             return false;
@@ -67,9 +67,9 @@ class PostController extends Controller
      * @param CategoryBase $CategoryBase модель категории
      * @param string $whatRender какую view рендерим
      **/
-    protected function renderIndex($dataProvider, $сategoryModel, $whatRender)
+    protected function renderIndex($dataProvider, $сategory, $whatRender)
     {
-    	$postQuery = $categoryModel->findCategoryes();
+    	$postQuery = $сategory->findCategoryes();
 
     	$dataProviderCategory = new ActiveDataProvider([
     			'query' => $postQuery,
@@ -96,10 +96,10 @@ class PostController extends Controller
 
     public function actionHome()
     {
-        $category = new CategoryModel();
-        $postQuery = PostModel::findPublishedPosts();
-        $dataProvider = getPostDataProvider($postQuery);
-        return renderIndex($dataProvider, $category, 'indexHome');
+        $category = new Category();
+        $postQuery = Post::findPublishedPosts();
+        $dataProvider = $this->getPostDataProvider($postQuery);
+        return $this->renderIndex($dataProvider, $category, 'indexHome');
     }
 
     /**
@@ -108,10 +108,10 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
-        $categoryModel = new CategoryModel();
-        $postQuery = PostModel::findMyPublishedPosts();
+        $category = new Category();
+        $postQuery = Post::findMyPublishedPosts();
         $dataProvider = $this->getPostDataProvider($postQuery);
-        return $this->renderIndex($dataProvider, $сategoryModel, 'index');
+        return $this->renderIndex($dataProvider, $category, 'index');
     }
 
     /**
@@ -121,8 +121,6 @@ class PostController extends Controller
      */
     public function actionView($id)
     {
-        $postModel = new PostModel();
-
         return $this->render('view', [
             'model' => $this->findModel($id),
             'commentForm' => new CommentForm(Url::to(['comment/add', 'id' => $id])),
@@ -136,12 +134,16 @@ class PostController extends Controller
         $model->authorId = Yii::$app->user->id;
         $upload->imageFile = UploadedFile::getInstance($upload, 'imageFile');
         // if you update, older image you delete, if uploading image is null
+        $pathForImage = (Yii::getAlias('@app') . "\\web\\" . Yii::getAlias('@imageUrlPathPost'). '\\' . $model->image . ".jpg");
+        
         if ($view == 'update') {
-            unlink(Yii::getAlias('@imageUrlPath'). '\\' . $upload->image);
+        	if(file_exists($pathForImage)){
+            	unlink($pathForImage);
+       		}
             $model->image = null;
         }
 
-        if ($upload->upload()) {  
+        if ($upload->upload("post")) {  
             $model->image = $upload->name;
         }
 
@@ -152,7 +154,7 @@ class PostController extends Controller
                 'model' => $model,
                 'image' => $upload,
                 'authors' => UserModel::find()->all(),
-                'category' => CategoryModel::find()->all()
+                'category' => Category::find()->all()
             ]);
         }
     }
@@ -163,7 +165,7 @@ class PostController extends Controller
      */
     public function actionCreate()
     {
-        $model = new PostModel();
+        $model = new Post();
        	return $this->saveModel($model, 'create');
     }
 
@@ -193,21 +195,6 @@ class PostController extends Controller
     }
 
     /**
-     * Проверка на автора поста
-     * @return bool
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    /*protected function isUserAuthor()
-    {   
-        Yii::warning(PostModel::find()->one()->getAuthor()->one()->id);
-        $requestModel = $this->findModel(Yii::$app->request->get('id'));
-        if ($requestModel == null) {
-            throw new NotFoundHttpException("Null request in isUserAuthor() by id");
-        }
-        return $requestModel->author->id == Yii::$app->user->id;
-    }*/
-
-    /**
      * Finds the Post model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -216,7 +203,7 @@ class PostController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PostModel::findOne($id)) !== null) {
+        if (($model = Post::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

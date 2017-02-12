@@ -64,7 +64,8 @@ $config = [
         */
     ],
     'aliases' => [
-        '@imageUrlPath' => 'image',
+        '@imageUrlPathPost' => 'image/post',
+        '@imageUrlPathChat' => 'image/chat',
     ],
     'params' => $params,
 ];
@@ -76,10 +77,6 @@ if (YII_ENV_DEV) {
         'class' => 'yii\debug\Module',
     ];*/
 
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-    ];
     $config['components']['log']['targets'][] = [
         'class' => 'yii\log\FileTarget',
         'levels' => ['info'],

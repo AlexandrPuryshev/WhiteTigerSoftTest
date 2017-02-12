@@ -1,7 +1,7 @@
 <?php
 namespace frontend\models;
 
-use common\models\db\CommentModel;
+use common\models\db\Comment;
 use Yii;
 use yii\base\Model;
 
@@ -53,7 +53,7 @@ class CommentForm extends Model
      * @param array $data данные пришедшие из формы
      * @return bool
      */
-    public function save(CommentModel $comment, array $data)
+    public function save(Comment $comment, array $data)
     {
         $isLoad = $comment->load([
             'parentId' => $data['parentId'],

@@ -2,7 +2,7 @@
 
 namespace frontend\controllers;
 
-use common\models\db\MessageModel;
+use common\models\db\Message;
 use frontend\models\UploadForm;
 use yii\data\ActiveDataProvider;
 use Yii;
@@ -18,8 +18,6 @@ use yii\web\Controller;
  */
 class MessengerController extends Controller 
 {
-
-	private $currentUser = null;
 
 	public function behaviors() 
 	{
@@ -55,7 +53,7 @@ class MessengerController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => MessageModel::find(),
+            'query' => Message::find(),
         ]);
 
         return $this->render('index', [
@@ -63,14 +61,6 @@ class MessengerController extends Controller
         ]);
     }
 
-
-	/**
-	 *
-	 */
-	public function init() 
-	{
-		$this->currentUser = isset(Yii::$app->user->identity->username) ? Yii::$app->user->identity->username : null;
-	}
 
 	/**
 	 * Загрузка изображений к сообщению
@@ -83,18 +73,14 @@ class MessengerController extends Controller
 
 
 		if (Yii::$app->request->isPost) {
-			$upload->imageFile = UploadedFile::getInstance($model, 'imageFile');
+			$upload->imageFile = UploadedFile::getInstance($upload, 'imageFile');
+			$upload->upload("message");
 
-			if($upload->upload()) {
-				 $model->image = $upload->name;
-			}
-
+			Yii::warning($upload->imageFile);
 			return $upload->imageFile->baseName;
-			
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
@@ -104,17 +90,17 @@ class MessengerController extends Controller
 	{
 		Yii::$app->response->format = Response::FORMAT_JSON;
 
-		$msg = Yii::$app->request->post();
+		$messageInfo = Yii::$app->request->post();
 
-		$message = new MessageModel();
-		$message->content   = $msg['content'];
-		$message->userName = $msg['userName'];
+		$message = new Message();
+		$message->content   = $messageInfo['content'];
+		$message->userName = $messageInfo['userName'];
 		$message->save();
 
 		return [
-			'id'         => $message->id,
-			'createdAt' => date("d M H:i", strtotime($message->createdAt)),
-			'owner'      => true
+			'id'        => $message->id,
+			'createdAt' => Yii::$app->formatter->asTime("now", 'php:d M H:i'),
+			'owner'     => true
 		];
 	}
 
@@ -123,16 +109,20 @@ class MessengerController extends Controller
 	 */
 	public function actionDeleteMessage() 
 	{
-		$msg  = Yii::$app->request->post();
-		$user = MessageModel::findOne($msg['id']);
+		$messageInfo  = Yii::$app->request->post();
+		$user = Message::findOne($messageInfo['idMessage']);
 
-		if ($user->userName === $this->currentUser) {
+		if (strcasecmp($user->userName, $this->getCurrentUserName()) == 0) {
 			$user->delete();
-
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	protected function getCurrentUserName()
+	{
+		return isset(Yii::$app->user->identity->username) ? Yii::$app->user->identity->username : null;
 	}
 
 }

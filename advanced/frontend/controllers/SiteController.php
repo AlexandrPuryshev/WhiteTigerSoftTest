@@ -16,16 +16,6 @@ class SiteController extends Controller
 {
 
     /**
-     * set alias path for image
-    */
-    /*public function init() 
-    {
-         Yii::setAlias('@imageUrlPath', Yii::$app->request->hostInfo . Yii::getAlias('@web') . '\\image');
-         Yii::setAlias('@imagePath', Yii::getAlias('@app') . '\\web\\image');
-    }*/
-
-
-    /**
      * @inheritdoc
      */
     public function actions()

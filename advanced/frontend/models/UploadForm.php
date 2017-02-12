@@ -23,12 +23,21 @@ class UploadForm extends Model
         );
     }
     
-    public function upload()
+    public function upload($object)
     {
+        Yii::warning($object);
+        Yii::warning(isset($this->imageFile->baseName));
+        Yii::warning($this->validate());
+
         if(isset($this->imageFile->baseName)){
             if ($this->validate()) {
                 $this->name = "image-prefix-" . time() . '-' . $this->imageFile->baseName;
-                $this->imageFile->saveAs(Yii::getAlias('@imageUrlPath'). '\\' . $this->name . '.' . $this->imageFile->extension);
+                if($object == "post"){
+                    $this->imageFile->saveAs(Yii::getAlias('@imageUrlPathPost'). '\\' . $this->name . '.' . $this->imageFile->extension);
+                }
+                else if($object == "message"){
+                    $this->imageFile->saveAs(Yii::getAlias('@imageUrlPathChat'). '\\' . $this->name . '.' . $this->imageFile->extension);
+                }
                 return true;
             }
         }
